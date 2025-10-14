@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator for Zarali</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" href="../pics/icons8-лягушка-30.png">
+
+</head>
+<body>
+     <div class="header">
+    <h4><a href="index1.html" class="rar-link">RaR Productions</a></h4>
+    <ul class="navigation">
+        <li class="list active"><a href="abouts.html">О матрицах</a></li>
+        <li class="list active"><a href="opr.html">Определитель</a></li>
+        <li class="list active"><a href="cramer.html">Метод Крамера</a></li>
+        <li class="list active"><a href="back.html">Обратная матрица</a></li>
+        <li class="list active"><a href="gauss.html">Метод Гаусса</a></li>
+    </ul>
+</div>
+<h1>О матрицах</h1>
+
+<h4>Сложение и вычитание матриц</h4>
+
+<h4>Выберите действие:</h4>
+<div class="operation-buttons">
+    <button class="op-btn active" data-op="add">Сложение</button>
+    <button class="op-btn" data-op="subtract">Вычитание</button>
+</div>
+<div style="height:20px;"></div>
+
+
+<h4>Введите матрицы A и B:</h4>
+<div class="matrices-container">
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <h4 class="matrix-label">A =</h4>
+      <table class="matrixA">
+        <tbody>
+          <tr><td><input type="number" placeholder="a11"></td><td><input type="number" placeholder="a12"></td><td><input type="number" placeholder="a13"></td></tr>
+          <tr><td><input type="number" placeholder="a21"></td><td><input type="number" placeholder="a22"></td><td><input type="number" placeholder="a23"></td></tr>
+          <tr><td><input type="number" placeholder="a31"></td><td><input type="number" placeholder="a32"></td><td><input type="number" placeholder="a33"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <h4 class="matrix-label">B =</h4>
+      <table class="matrixB">
+        <tbody>
+          <tr><td><input type="number" placeholder="b11"></td><td><input type="number" placeholder="b12"></td><td><input type="number" placeholder="b13"></td></tr>
+          <tr><td><input type="number" placeholder="b21"></td><td><input type="number" placeholder="b22"></td><td><input type="number" placeholder="b23"></td></tr>
+          <tr><td><input type="number" placeholder="b31"></td><td><input type="number" placeholder="b32"></td><td><input type="number" placeholder="b33"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<button class="btn" onclick="calculate()">Вычислить</button>
+<div style="height:20px;"></div>
+
+
+
+
+<h4>Результат:</h4>
+<div class="matrix-row">
+  <h4 class="matrix-label" id="result-label">A+B =</h4>
+  <table class="matrixResult">
+    <tbody>
+      <tr><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td><input></td><td><input></td><td><input></td></tr>
+      <tr><td><input></td><td><input></td><td><input></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+let selectedOp = 'add';
+
+document.querySelectorAll('.op-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedOp = btn.dataset.op;
+    document.getElementById('result-label').innerText = selectedOp === 'add' ? 'A+B =' : 'A-B =';
+  });
+});
+
+function getMatrixFromTable(className) {
+  const matrix = [];
+  document.querySelectorAll(`.${className} tbody tr`).forEach(row => {
+    const rowValues = [];
+    row.querySelectorAll('input').forEach(cell => {
+      const val = parseFloat(cell.value);
+      rowValues.push(isNaN(val) ? 0 : val);
+    });
+    matrix.push(rowValues);
+  });
+  return matrix;
+}
+
+function calculate() {
+  const matrixA = getMatrixFromTable('matrixA');
+  const matrixB = getMatrixFromTable('matrixB');
+  const resultTable = document.querySelector('.matrixResult');
+
+  matrixA.forEach((row, i) => {
+    row.forEach((val, j) => {
+      const res = selectedOp === 'add' ? val + matrixB[i][j] : val - matrixB[i][j];
+      resultTable.rows[i].cells[j].querySelector('input').value = res;
+    });
+  });
+}
+</script>
+
+
+
+
+
+
+
+
+    
+</body>
+</html>
