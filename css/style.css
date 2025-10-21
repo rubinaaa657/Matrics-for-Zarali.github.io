@@ -66,6 +66,36 @@ h4{
 .navigation li a:hover {
     color: #1E90FF;        
 }
+
+.abouts-page {
+    position: relative; /* для ориентира sticky */
+}
+
+.abouts-page .topics {
+    position: sticky;
+    top: 150px;
+    float: right;      /* размещаем блок справа */
+    right: 20px;       /* отступ от правого края */
+    font-size: 8px;
+}
+
+.abouts-page .topics ul {
+    list-style: none;
+    padding: 0;
+}
+
+.abouts-page .topics li {
+    margin: 5px 0;
+}
+
+.abouts-page .topics li a {
+    text-decoration: none;
+    color: #000000;
+}
+
+
+
+
 .content {
     display: flex;
     align-items: flex-start; 
@@ -79,23 +109,21 @@ p{
     margin-top: 20px;
     
 }
+.circle{
+  display: inline-block;
+  border: 4px solid;
+  border-radius: 10px;
+  padding: 8px 16px;
+}
+
+
 .content img {
     height: 300px;
     width: auto;
     margin-left: 200px;
     margin-bottom: 100px;
 }
-.btn {
-    padding: 10px 20px;
-    margin-right: 50px;
-    font-size: 12px;
-    background-color: #00BFFF;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+
 .btn a {
   color: white;
   text-decoration: none; 
@@ -117,7 +145,7 @@ footer {
 }
 .matrices-container {
   display: flex;
-  gap: 40px;
+  gap: 30px;
   margin-bottom: 15px;
 }
 
@@ -148,6 +176,10 @@ footer {
   color: #1E90FF;
   font-weight: bold;
   outline: none;
+  font-size: 8px;
+  align-items: center;
+  font-size: 12px;
+
 }
 
 .matrixResult input {
@@ -157,8 +189,8 @@ footer {
 .matrixB input::placeholder,
 .matrixResult input::placeholder {
   color: #aaa;
-  font-family: 'digitalpixel', sans-serif;
-  font-weight: bold;
+  font-family: 'digitalpixel';
+  
 }
 
 table {
@@ -166,7 +198,7 @@ table {
 }
 
 td {
-  padding: 2px;
+  padding: 1px;
 }
 
 .operation-buttons {
@@ -183,7 +215,8 @@ td {
   background-color: #f5f0d6;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-family: 'digital pixel';
+  font-family: 'digitalpixel';
+  font-size: 10px;
 }
 
 .op-btn:first-child {
@@ -193,13 +226,13 @@ td {
 .op-btn.active {
   background-color: #1E90FF;
   color: white;
-  font-family: 'digital pixel';
+  font-family: 'digitalpixel';
 }
 
 .btn {
   padding: 10px 20px;
-  font-size: 12px;
-  font-family: 'digital pixel';
+  font-size: 10px;
+  font-family: 'digitalpixel';
   background-color: #1E90FF;
   color: white;
   border: none;
@@ -211,6 +244,267 @@ td {
 .btn:hover {
   background-color: #0b437a;
 }
+.matrixA input, .matrixB input, .matrixResult input {
+  width: 40px;   
+  height: 40px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  outline: none;
+}
 
 
+
+.size-select {
+  width: 170px;   
+  height: 50px;
+  font-family: 'digitalpixel';
+  font-size: 11px; 
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f5f0d6;  
+  text-align: center;
+  vertical-align: middle;
+}
+.size-select:hover {
+  background-color: #f5f0d6;
+}
+.size-select:focus {
+  outline: none;
+  /* box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.4); */
+}
+.size-select option {
+  background-color: #f5f0d6;
+  color: #000000;
+}
+
+.size-select option:checked {
+  background-color: #1E90FF;
+}
+
+
+
+
+
+.size-select2 {
+  width: 170px;   
+  height: 50px;
+  font-family: 'digitalpixel';
+  font-size: 11px; 
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f5f0d6;  
+  text-align: center;
+  vertical-align: middle;
+}
+.size-select2:hover {
+  background-color: #f5f0d6;
+}
+.size-select2:focus {
+  outline: none;
+  /* box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.4); */
+}
+.size-select2 option {
+  background-color: #f5f0d6;
+  color: #000000;
+}
+
+.size-select2 option:checked {
+  background-color: #1E90FF;
+}
+.scalar-input {
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  font-family: 'digitalpixel';
+  font-size: 12px;
+  outline: none;
+}
+
+.matrixC input,
+.matrixResult2 input {
+  width: 60px;
+  height: 40px;
+  gap: 6px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  outline: none;
+  font-size: 12px;
+}
+
+.matrixResult2 input {
+  pointer-events: none;
+}
+
+.matrixC input::placeholder,
+.matrixResult2 input::placeholder,
+.matrixResult3 input::placeholder {
+  color: #aaa;
+  font-family: 'digitalpixel';
+}
+
+.matrixResult2, .matrixResult3 {
+  margin-top: 5px;
+}
+
+
+.size-select3{
+  width: 170px;   
+  height: 50px;
+  font-family: 'digitalpixel';
+  font-size: 11px; 
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f5f0d6;  
+  text-align: center;
+  vertical-align: middle;
+}
+.matrixResult3 input {
+  pointer-events: none;
+  width: 100px;
+  height: 40px;
+}
+
+.matrixD1 input,
+.matrixD2 input,
+.matrixResult3 input{
+ width: 60px;
+  height: 40px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  outline: none;
+  font-size: 12px;
+  font-family: 'digitalpixel';
+}
+.matrixResult input,
+.matrixResult2 input,
+.matrixResult3 input {
+  width: 70px;
+  height: 40px;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  outline: none;
+  font-size: 12px;
+  font-family: 'digitalpixel';
+}
+
+.size-select-gauss {
+  width: 170px;   
+  height: 50px;
+  font-family: 'digitalpixel';
+  font-size: 11px; 
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f5f0d6;  
+  text-align: center;
+  vertical-align: middle;
+  margin: 10px 0;
+}
+
+.result-container {
+  margin: 20px 0;
+  padding: 15px;
+  border: 2px solid #f5f0d6;
+  border-radius: 10px;
+  background-color: #f9f7e8;
+}
+
+.result-item {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.step-container {
+  margin: 15px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f5f0d6;
+}
+
+.step-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.equations-container {
+  margin: 20px 0;
+}
+
+.equation {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.coefficient {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    border-radius: 6px;
+    background-color: #f5f0d6;
+    border: none;
+    color: #1E90FF;
+    font-weight: bold;
+    outline: none;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+.coefficient::placeholder {
+    color: #aaa;
+}
+
+.variable {
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.equals {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.plus {
+    margin: 0 5px;
+    font-weight: bold;
+}
+#steps-container, #final-result {
+    font-size: inherit; 
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+h6, 
+#steps-container, 
+#final-result, .result-item {
+    font-size: 10.72px;
+    font-weight: 600;
+    margin: 5px 0;
+}
 

@@ -8,9 +8,9 @@
     <link rel="icon" href="pics/icons8-лягушка-30.png">
 
 </head>
-<body>
+<body class="abouts-page">
      <div class="header">
-    <h4><a href="index.html" class="rar-link">RaR Productions</a></h4>
+    <h6><a href="index.html" class="rar-link">RaR Productions</a></h6>
     <ul class="navigation">
         <li class="list active"><a href="abouts.html">О матрицах</a></li>
         <li class="list active"><a href="opr.html">Определитель</a></li>
@@ -19,11 +19,42 @@
         <li class="list active"><a href="gauss.html">Метод Гаусса</a></li>
     </ul>
 </div>
-<h1>О матрицах</h1>
+<h1 id="matrix-section">О матрицах</h1>
+<div class="topics">
+    <ul>
+        <li><a href="#addition" class="circle">+ -</a></li>
+        <li><a href="#scalar" class="circle">M · k</a></li>
+        <li><a href="#multiplication" class="circle">M · M</a></li>
+    </ul>
+</div>
 
-<h4>Сложение и вычитание матриц</h4>
+<h6>Матрицей размера MxN называется прямоугольная таблица элементов некторого множества, содержащая M строк и N столбцов.</h6>
+<p></p>
+<h6>Матрицы обозначаются заглавной буквой латинского алфавита.</h6>
+<h6>a ij - элемент матрицы.</h6>
+<h6>i, j - индексы. i - номер строки, j - номер столбца.</h6>
+<br>
 
-<h4>Выберите действие:</h4>
+<h4 class="circle" id="addition">Сложение и вычитание матриц</h4>
+<h4>! Критерий:</h4>
+<h6>Размер матриц должен совпадать.</h6>
+<h6>Сложение и вычитание матриц происходит по принципу наложения одной матрицы на другую:</h6>
+<h6>a11+b11; a32-b32 и т.д.</h6>
+
+
+<h6>Выберите размер матрицы:</h6>
+<select id="matrix-size" class="size-select">
+  <option value="2">2 x 2</option>
+  <option value="3" selected>3 x 3</option>
+  <option value="4">4 x 4</option>
+  <option value="5">5 x 5</option>
+  <option value="6">6 x 6</option>
+</select>
+
+
+
+
+<h6>Выберите действие:</h6>
 <div class="operation-buttons">
     <button class="op-btn active" data-op="add">Сложение</button>
     <button class="op-btn" data-op="subtract">Вычитание</button>
@@ -31,11 +62,11 @@
 <div style="height:20px;"></div>
 
 
-<h4>Введите матрицы A и B:</h4>
+<h6>Введите матрицы A и B:</h6>
 <div class="matrices-container">
   <div class="matrix-block">
     <div class="matrix-row">
-      <h4 class="matrix-label">A =</h4>
+      <h6 class="matrix-label">A =</h6>
       <table class="matrixA">
         <tbody>
           <tr><td><input type="number" placeholder="a11"></td><td><input type="number" placeholder="a12"></td><td><input type="number" placeholder="a13"></td></tr>
@@ -48,7 +79,7 @@
 
   <div class="matrix-block">
     <div class="matrix-row">
-      <h4 class="matrix-label">B =</h4>
+      <h6 class="matrix-label">B =</h6>
       <table class="matrixB">
         <tbody>
           <tr><td><input type="number" placeholder="b11"></td><td><input type="number" placeholder="b12"></td><td><input type="number" placeholder="b13"></td></tr>
@@ -67,9 +98,9 @@
 
 
 
-<h4>Результат:</h4>
+<h6>Результат:</h6>
 <div class="matrix-row">
-  <h4 class="matrix-label" id="result-label">A+B =</h4>
+  <h6 class="matrix-label" id="result-label">A+B =</h6>
   <table class="matrixResult">
     <tbody>
       <tr><td><input></td><td><input></td><td><input></td></tr>
@@ -80,6 +111,10 @@
 </div>
 
 <script>
+const topics = document.querySelector('.topics');
+const offsetTop = topics.offsetTop;
+
+
 let selectedOp = 'add';
 
 document.querySelectorAll('.op-btn').forEach(btn => {
@@ -90,6 +125,24 @@ document.querySelectorAll('.op-btn').forEach(btn => {
     document.getElementById('result-label').innerText = selectedOp === 'add' ? 'A+B =' : 'A-B =';
   });
 });
+
+function generateMatrix(size, className, isResult = false) {
+  const table = document.querySelector(`.${className} tbody`);
+  table.innerHTML = '';
+  for (let i = 0; i < size; i++) {
+    const row = document.createElement('tr');
+    for (let j = 0; j < size; j++) {
+      const cell = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'number';
+      if (isResult) input.readOnly = true;
+      input.placeholder = `${className[6]}${i+1}${j+1}`;
+      cell.appendChild(input);
+      row.appendChild(cell);
+    }
+    table.appendChild(row);
+  }
+}
 
 function getMatrixFromTable(className) {
   const matrix = [];
@@ -116,7 +169,288 @@ function calculate() {
     });
   });
 }
+const sizeSelect = document.getElementById('matrix-size');
+sizeSelect.addEventListener('change', () => {
+  const size = parseInt(sizeSelect.value);
+  generateMatrix(size, 'matrixA');
+  generateMatrix(size, 'matrixB');
+  generateMatrix(size, 'matrixResult', true);
+});
+
+generateMatrix(3, 'matrixA');
+generateMatrix(3, 'matrixB');
+generateMatrix(3, 'matrixResult', true);
+//ctrl shift l - поменять все за один раз 
+//ctrl shift p - emmet
 </script>
+<br>
+<h4 class="circle" id="scalar">Умножение матрицы на число </h4>
+<h6>Умножение матрицы на число происходит по принципу наложения числа на матрицу:</h6>
+<h6>k·a11; k·a23 и т.д.</h6>
+<h6>Введите число:</h6>
+<div class="matrices-container">
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <input type="number" id="scalar" placeholder="2" class="scalar-input">
+    </div>
+  </div>
+</div>
+
+<h6>Выберите размер матрицы:</h6>
+<select id="matrix-size2" class="size-select2">
+  <option value="2">2 x 2</option>
+  <option value="3" selected>3 x 3</option>
+  <option value="4">4 x 4</option>
+  <option value="5">5 x 5</option>
+  <option value="6">6 x 6</option>
+</select>
+
+<h6>Введите матрицу:</h6>
+<div class="matrices-container">
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <h6 class="matrix-label">A =</h6>
+      <table class="matrixC">
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+    <button class="btn" onclick="multiplyMatrix()">Вычислить</button>
+<h6>Результат:</h6>
+<div class="matrix-row">
+  <h6 class="matrix-label">k · A =</h6>
+  <table class="matrixResult2">
+    <tbody></tbody>
+  </table>
+</div>
+<script>
+
+   function generateMatrix2(size, className, isResult = false) {
+    const table = document.querySelector(`.${className} tbody`);
+    table.innerHTML = '';
+    for (let i = 0; i < size; i++) {
+      const row = document.createElement('tr');
+      for (let j = 0; j < size; j++) {
+        const cell = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'number';
+        if (isResult) input.readOnly = true;
+        input.placeholder = `${className[6]}${i+1}${j+1}`;
+        cell.appendChild(input);
+        row.appendChild(cell);
+      }
+      table.appendChild(row);
+    }
+  }
+
+  function getMatrixFromTable2(className) {
+    const matrix = [];
+    document.querySelectorAll(`.${className} tbody tr`).forEach(row => {
+      const rowValues = [];
+      row.querySelectorAll('input').forEach(cell => {
+        const val = parseFloat(cell.value);
+        rowValues.push(isNaN(val) ? 0 : val);
+      });
+      matrix.push(rowValues);
+    });
+    return matrix;
+  }
+
+  function multiplyMatrix() {
+    const scalar = parseFloat(document.getElementById('scalar').value);
+    if (isNaN(scalar)) {
+      alert("Введите число!");
+      return;
+    }
+
+    const matrixA = getMatrixFromTable2('matrixC');
+    const resultTable = document.querySelector('.matrixResult2 tbody');
+
+    matrixA.forEach((row, i) => {
+      row.forEach((val, j) => {
+        resultTable.rows[i].cells[j].querySelector('input').value = val * scalar;
+      });
+    });
+  }
+
+  const sizeSelect2 = document.getElementById('matrix-size2');
+  sizeSelect2.addEventListener('change', () => {
+    const size = parseInt(sizeSelect2.value);
+    generateMatrix2(size, 'matrixC');
+    generateMatrix2(size, 'matrixResult2', true);
+  });
+
+  generateMatrix2(3, 'matrixC');
+  generateMatrix2(3, 'matrixResult2', true);
+</script>
+
+<h4 class="circle" id="multiplication">Умножение матрицы на матрицу </h4>
+<h4>! Критерий:</h4>
+<h6>Количество столбов первой матрицы совпадает с количеством строк второй матрицы.</h6>
+<h6>При умножении строки первой матрицы перемножаются со столбцом второй матрицы: </h6>
+<h6>a11·b11 + a12·b21 и тд.</h6>
+<br>
+<h6>Выберите размер первой матрицы:</h6>
+
+<select id="rowsA" class="size-select3">  
+  <option value="2" selected>2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select> x 
+<select id="colsA" class="size-select3">  
+  <option value="2">2</option>
+  <option value="3" selected>3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+
+<h6>Выберите размер второй матрицы:</h6>
+<select id="rowsB" class="size-select3">  
+  <option value="2">2</option>
+  <option value="3" selected>3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select> x 
+<select id="colsB" class="size-select3">  
+  <option value="2" selected>2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+<h6>Введите первую матрицу:</h6>
+<div class="matrices-container">
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <h6 class="matrix-label">A =</h6>
+      <table class="matrixD1">
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<h6>Введите вторую матрицу:</h6>
+<div class="matrices-container">
+  <div class="matrix-block">
+    <div class="matrix-row">
+      <h6 class="matrix-label">A =</h6>
+      <table class="matrixD2">
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<button class="btn" onclick="multiplyMatrixDD()">Вычислить</button>
+<h6>Результат:</h6>
+<div class="matrix-row">
+  <h6 class="matrix-label">A · B =</h6>
+  <table class="matrixResult3">
+    <tbody></tbody>
+  </table>
+</div>
+<script>
+function generateMatrixD(rows, cols, className, isResult = false) {
+  const table = document.querySelector(`.${className} tbody`);
+  table.innerHTML = '';
+  for (let i = 0; i < rows; i++) {
+    const row = document.createElement('tr');
+    for (let j = 0; j < cols; j++) {
+      const cell = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'number';
+      if (isResult) input.readOnly = true;
+      input.placeholder = `${className[6]}${i + 1}${j + 1}`;
+      cell.appendChild(input);
+      row.appendChild(cell);
+    }
+    table.appendChild(row);
+  }
+}
+
+function getMatrixFromTable(className) {
+  const matrix = [];
+  document.querySelectorAll(`.${className} tbody tr`).forEach(row => {
+    const rowValues = [];
+    row.querySelectorAll('input').forEach(cell => {
+      const val = parseFloat(cell.value);
+      rowValues.push(isNaN(val) ? 0 : val);
+    });
+    matrix.push(rowValues);
+  });
+  return matrix;
+}
+
+function multiplyMatrixDD() {
+  const rowsA = parseInt(document.getElementById('rowsA').value);
+  const colsA = parseInt(document.getElementById('colsA').value);
+  const rowsB = parseInt(document.getElementById('rowsB').value);
+  const colsB = parseInt(document.getElementById('colsB').value);
+
+  if (colsA !== rowsB) {
+    alert("❌ Ошибка: количество столбцов A должно совпадать с количеством строк B!");
+    return;
+  }
+
+  const A = getMatrixFromTable('matrixD1');
+  const B = getMatrixFromTable('matrixD2');
+
+  const result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));
+
+  for (let i = 0; i < rowsA; i++) {
+    for (let j = 0; j < colsB; j++) {
+      for (let k = 0; k < colsA; k++) {
+        result[i][j] += A[i][k] * B[k][j];
+      }
+    }
+  }
+const table = document.querySelector('.matrixResult3 tbody');
+table.innerHTML = '';
+result.forEach(row => {
+  const tr = document.createElement('tr');
+  row.forEach(value => {
+    const td = document.createElement('td');
+    const input = document.createElement('input');
+
+    const rounded = Math.round(value * 100) / 100; 
+    input.value = Number.isInteger(rounded) ? rounded : rounded.toFixed(2);
+
+    input.readOnly = true;
+    td.appendChild(input);
+    tr.appendChild(td);
+  });
+  table.appendChild(tr);
+});
+}
+// обновление таблиц при изменении размеров
+document.querySelectorAll('.size-select3').forEach(select => {
+  select.addEventListener('change', () => {
+    const rowsA = parseInt(document.getElementById('rowsA').value);
+    const colsA = parseInt(document.getElementById('colsA').value);
+    const rowsB = parseInt(document.getElementById('rowsB').value);
+    const colsB = parseInt(document.getElementById('colsB').value);
+    generateMatrixD(rowsA, colsA, 'matrixD1');
+    generateMatrixD(rowsB, colsB, 'matrixD2');
+    generateMatrixD(rowsA, colsB, 'matrixResult3', true);
+  });
+});
+
+// создаём матрицы по умолчанию при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  generateMatrixD(2, 3, 'matrixD1');
+  generateMatrixD(3, 2, 'matrixD2');
+  generateMatrixD(2, 2, 'matrixResult3', true);
+});
+</script>
+
 
 
 
