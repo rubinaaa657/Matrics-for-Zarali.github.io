@@ -261,7 +261,7 @@ generateMatrix(3, 'matrixResult', true);
   function multiplyMatrix() {
     const scalar = parseFloat(document.getElementById('scalar').value);
     if (isNaN(scalar)) {
-      alert("Введите число!");
+      alert("Введи число.");
       return;
     }
 
@@ -396,7 +396,7 @@ function multiplyMatrixDD() {
   const colsB = parseInt(document.getElementById('colsB').value);
 
   if (colsA !== rowsB) {
-    alert("❌ Ошибка: количество столбцов A должно совпадать с количеством строк B!");
+    alert("Выйди и зайди нормально.Количество столбцов A должно совпадать с количеством строк B.");
     return;
   }
 
@@ -430,7 +430,6 @@ result.forEach(row => {
   table.appendChild(tr);
 });
 }
-// обновление таблиц при изменении размеров
 document.querySelectorAll('.size-select3').forEach(select => {
   select.addEventListener('change', () => {
     const rowsA = parseInt(document.getElementById('rowsA').value);
@@ -443,7 +442,6 @@ document.querySelectorAll('.size-select3').forEach(select => {
   });
 });
 
-// создаём матрицы по умолчанию при загрузке
 window.addEventListener('DOMContentLoaded', () => {
   generateMatrixD(2, 3, 'matrixD1');
   generateMatrixD(3, 2, 'matrixD2');

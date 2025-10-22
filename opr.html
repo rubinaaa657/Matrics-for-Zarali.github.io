@@ -26,15 +26,106 @@
 <br>
 <h4 class="circle">Определитель матрицы</h4>
 <h6>Определитель матрицы может быть найден методом треугольников, методом диагоналей и методом миноров.</h6>
-
+<p></p>
 <h6>Выберите размер матрицы:</h6>
-<select id="matrix-size" class="size-select">
-  <option value="2">2 x 2</option>
-  <option value="3" selected>3 x 3</option>
-  <option value="4">4 x 4</option>
-  <option value="5">5 x 5</option>
-  <option value="6">6 x 6</option>
+
+<select id="rowsopr" class="size-select-opr">  
+  <option value="2" selected>2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select> x 
+<select id="colsopr" class="size-select-opr">  
+  <option value="2" selected>2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
 </select>
+<p></p>
+<h6>Введите матрицу A:</h6>
+<table class="matrixopr"><tbody></tbody></table>
+<p></p>
+<h6>Определитель:</h6>
+<table class="matrixResultopr"><tbody></tbody></table>
+
+<button class="btn" onclick="calculateDeterminant()">Вычислить</button>
+    <p></p>
+<script>
+const sizeSelect = document.getElementById('matrix-size-opr');
+
+function generateMatrixopr(rows,cols, className,isResult = false) {
+    const table = document.querySelector(`.${className} tbody`);
+    table.innerHTML = '';
+    for (let i = 0; i < size; i++) {
+        const row = document.createElement('tr');
+        for (let j = 0; j < size; j++) {
+            const cell = document.createElement('td');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.placeholder = `a${i+1}${j+1}`;
+            cell.appendChild(input);
+            row.appendChild(cell);
+        }
+        table.appendChild(row);
+    }
+}
+// function generateMatrixD(rows, cols, className, isResult = false) {
+//   const table = document.querySelector(`.${className} tbody`);
+//   table.innerHTML = '';
+//   for (let i = 0; i < rows; i++) {
+//     const row = document.createElement('tr');
+//     for (let j = 0; j < cols; j++) {
+//       const cell = document.createElement('td');
+//       const input = document.createElement('input');
+//       input.type = 'number';
+//       if (isResult) input.readOnly = true;
+//       input.placeholder = `${className[6]}${i + 1}${j + 1}`;
+//       cell.appendChild(input);
+//       row.appendChild(cell);
+//     }
+//     table.appendChild(row);
+//   }
+// }
+function getMatrixFromTable(className) {
+    const matrix = [];
+    document.querySelectorAll(`.${className} tbody tr`).forEach(row => {
+        const rowValues = [];
+        row.querySelectorAll('input').forEach(cell => {
+            const val = parseFloat(cell.value);
+            rowValues.push(isNaN(val) ? 0 : val);
+        });
+        matrix.push(rowValues);
+    });
+    return matrix;
+}
+
+function calculateDeterminant() {
+    const matrix = getMatrixFromTable('matrixopr');
+    const size = matrix.length;
+    const resultTable = document.querySelector('.matrixResultopr tbody');
+    resultTable.innerHTML = '';
+
+    if (size === 2) {
+        const det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0];
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.textContent = det;
+        row.appendChild(cell);
+        resultTable.appendChild(row);
+    } else {
+        alert("Определитель считается только для 2x2 матриц.");
+    }
+}
+
+sizeSelect.addEventListener('change', () => {
+    const size = parseInt(sizeSelect.value);
+    generateMatrixopr(size, 'matrixopr');
+    document.querySelector('.matrixResultopr tbody').innerHTML = '';
+});
+
+generateMatrixopr(parseInt(sizeSelect.value), 'matrixopr');
 
 
 
@@ -44,7 +135,14 @@
 
 
 
+</script>
 
+
+
+
+
+
+<p></p>
 <h4 class="circle">Алгебраическое дополнение</h4>
 <h6>Алгебраическим дополнением элемента aij матрицы называется минор этого элемента, умноженный на (-1)</h6>
 

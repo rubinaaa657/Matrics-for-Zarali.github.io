@@ -431,6 +431,10 @@ td {
   border: 2px solid #f5f0d6;
   border-radius: 10px;
   background-color: #f9f7e8;
+  font-size: 10px;
+}
+.matrixtostr{
+  font-size: 10px;
 }
 
 .result-item {
@@ -449,6 +453,7 @@ td {
 .step-title {
   font-weight: bold;
   margin-bottom: 5px;
+  font-size: 10px;
 }
 
 .equations-container {
@@ -503,8 +508,72 @@ td {
 h6, 
 #steps-container, 
 #final-result, .result-item {
-    font-size: 10.72px;
+
     font-weight: 600;
     margin: 5px 0;
 }
 
+.size-select-opr {
+  width: 170px;   
+  height: 50px;
+  font-family: 'digitalpixel';
+  font-size: 11px; 
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f5f0d6;  
+  text-align: center;
+  vertical-align: middle;
+}
+.size-select-opr:hover {
+  background-color: #f5f0d6;
+}
+.size-select-opr:focus {
+  outline: none;
+  /* box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.4); */
+}
+.size-select-opr option {
+  background-color: #f5f0d6;
+  color: #000000;
+}
+
+.size-select-opr option:checked {
+  background-color: #1E90FF;
+}
+.matrixopr input,
+.matrixResultopr input {
+  width: 60px;
+  height: 40px;
+  gap: 6px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f5f0d6;
+  color: #1E90FF;
+  font-weight: bold;
+  outline: none;
+  font-size: 12px;
+}
+
+.matrixResultopr input {
+  pointer-events: none;
+}
+
+.matrixopr input::placeholder,
+.matrixResultopr input::placeholder {
+  color: #aaa;
+  font-family: 'digitalpixel';
+  font-size: 10px;
+}
+
+.matrixResultopr{
+  margin-top: 5px;
+  font-size: 10px;
+}
+
+.equation { margin-bottom: 10px; }
+.coefficient { width: 50px; margin-right: 5px; }
+.variable, .plus, .equals { margin-right: 5px; }
+.step-container { margin-bottom: 15px; background: #f3f3f3; padding: 5px; border-radius: 5px; }
+.result-container { margin-top: 20px; padding: 5px; background: #f5f0d6 ;border-radius: 20px; font-size: 10.72px;}
+.result-item { margin: 2px 0; }
