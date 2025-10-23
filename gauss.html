@@ -265,40 +265,87 @@ function createEquations(size) {
     }
 }
 
-// Форматирование числа
-// Функция для перевода десятичного числа в обыкновенную дробь
+// НОД для сокращения дроби
+function gcd(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b) {
+        const t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}
+
+// Перевод десятичного в дробь (без опасных делений)
 function decimalToFraction(decimal) {
-    const tolerance = 1.0E-6;
-    let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
-    let b = Math.abs(decimal);
-    do {
-        let a = Math.floor(b);
-        let aux = h1; h1 = a * h1 + h2; h2 = aux;
-        aux = k1; k1 = a * k1 + k2; k2 = aux;
-        b = 1 / (b - a);
-    } while (Math.abs(decimal - h1 / k1) > Math.abs(decimal) * tolerance);
+    if (!isFinite(decimal)) return null; // Infinity или NaN
+    const sign = decimal < 0 ? -1 : 1;
+    decimal = Math.abs(decimal);
 
-    // возвращаем с правильным знаком
-    return (decimal < 0 ? "-" : "") + h1 + "/" + k1;
+    // Ограничение знаменателя для точности
+    const MAX_DEN = 10000;
+    // Удобный масштаб, чтобы уменьшить ошибку
+    let denom = 1;
+    let numer = Math.round(decimal * denom);
+
+    // увеличиваем denom пока не получим приемлемую точность или не достигнем MAX_DEN
+    // (ищем наилучшее приближение с целым числителем)
+    let bestNum = numer, bestDen = denom, bestErr = Math.abs(decimal - numer / denom);
+    for (denom = 1; denom <= MAX_DEN; denom *= 10) {
+        numer = Math.round(decimal * denom);
+        const err = Math.abs(decimal - numer / denom);
+        if (err < bestErr) {
+            bestErr = err;
+            bestNum = numer;
+            bestDen = denom;
+            if (err === 0) break;
+        }
+        // если denom уже 10000 — прекратить
+        if (denom === MAX_DEN) break;
+    }
+
+    // Ещё бинарный поиск по соседним знаменателям (чтобы не проходить все)
+    for (let d = 1; d <= 2000; d++) {
+        const n = Math.round(decimal * d);
+        const err = Math.abs(decimal - n / d);
+        if (err < bestErr) {
+            bestErr = err;
+            bestNum = n;
+            bestDen = d;
+            if (err === 0) break;
+        }
+    }
+
+    // Если дробь слишком близка к целому, вернуть целое
+    if (Math.abs(bestNum / bestDen - Math.round(bestNum / bestDen)) < 1e-10) {
+        return String(Math.round(bestNum / bestDen) * sign);
+    }
+
+    // Сокращаем дробь
+    const g = gcd(bestNum, bestDen);
+    bestNum /= g;
+    bestDen /= g;
+
+    return (sign < 0 ? "-" : "") + bestNum + "/" + bestDen;
 }
 
-// Форматирование числа с переводом в дроби
 function formatNumber(num) {
-    if (Number.isNaN(num)) return '—';
-    if (Number.isInteger(num)) return num;
+    if (!isFinite(num)) return '—';          // Infinity или NaN => печатаем прочерк
+    if (Number.isInteger(num)) return String(num);
 
-    // Если число близко к целому — округляем
-    if (Math.abs(num - Math.round(num)) < 1e-10) return Math.round(num);
+    // Если очень большое или очень маленькое — форматируем с 4 знаками
+    if (Math.abs(num) >= 1e6 || Math.abs(num) <= 1e-6) {
+        return Number(num).toFixed(4);
+    }
 
-    // Если число дробное — переводим в обыкновенную дробь
-    if (Math.abs(num) < 1e6 && Math.abs(num) > 1e-6) {
-        return decimalToFraction(num);
-    }ы
+    // Попробуем представить как дробь
+    const frac = decimalToFraction(num);
+    if (frac !== null) return frac;
 
-    // Иначе оставляем с 4 знаками после запятой
-    return num.toFixed(4);
+    return Number(num).toFixed(4);
 }
-let val = formatNumber(matrix[i][j]);
+
 
 
 
@@ -438,7 +485,6 @@ resultContainer.innerHTML = resultHTML;
 }
 </script>
 
-<div id="final-result"></div>
 
 <div id="steps-container"></div>
 

@@ -425,14 +425,14 @@ td {
   margin: 10px 0;
 }
 
-.result-container {
+/* .result-container {
   margin: 20px 0;
   padding: 15px;
   border: 2px solid #f5f0d6;
   border-radius: 10px;
   background-color: #f9f7e8;
   font-size: 10px;
-}
+} */
 .matrixtostr{
   font-size: 10px;
 }
@@ -505,7 +505,7 @@ td {
     font-family: inherit;
 }
 
-h6, 
+ 
 #steps-container, 
 #final-result, .result-item {
 
@@ -575,5 +575,5 @@ h6,
 .coefficient { width: 50px; margin-right: 5px; }
 .variable, .plus, .equals { margin-right: 5px; }
 .step-container { margin-bottom: 15px; background: #f3f3f3; padding: 5px; border-radius: 5px; }
-.result-container { margin-top: 20px; padding: 5px; background: #f5f0d6 ;border-radius: 20px; font-size: 10.72px;}
+.result-container { margin-top: 20px; padding: 5px; background: #f5f0d6 ;border-radius: 20px; font-size: 18px;}
 .result-item { margin: 2px 0; }
