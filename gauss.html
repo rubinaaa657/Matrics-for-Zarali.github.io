@@ -211,7 +211,7 @@ function solveGauss() {
 let currentSize = 3;
 const variableNames = ['x', 'y', 'z', 'w', 'v', 'u'];
 
-// Создание полей для СЛАУ
+//СЛАУ
 document.addEventListener('DOMContentLoaded', () => createEquations(currentSize));
 
 document.getElementById('matrix-size-gauss').addEventListener('change', function() {
@@ -265,7 +265,7 @@ function createEquations(size) {
     }
 }
 
-// НОД для сокращения дроби
+// НОД сокращение 
 function gcd(a, b) {
     a = Math.abs(a);
     b = Math.abs(b);
@@ -277,20 +277,19 @@ function gcd(a, b) {
     return a;
 }
 
-// Перевод десятичного в дробь (без опасных делений)
+
 function decimalToFraction(decimal) {
-    if (!isFinite(decimal)) return null; // Infinity или NaN
+    if (!isFinite(decimal)) return null; 
     const sign = decimal < 0 ? -1 : 1;
     decimal = Math.abs(decimal);
 
-    // Ограничение знаменателя для точности
+    // макс знаменатель
     const MAX_DEN = 10000;
-    // Удобный масштаб, чтобы уменьшить ошибку
+    // масштаб
     let denom = 1;
     let numer = Math.round(decimal * denom);
 
-    // увеличиваем denom пока не получим приемлемую точность или не достигнем MAX_DEN
-    // (ищем наилучшее приближение с целым числителем)
+    // увеличиваем пока не точность, либо макс знам
     let bestNum = numer, bestDen = denom, bestErr = Math.abs(decimal - numer / denom);
     for (denom = 1; denom <= MAX_DEN; denom *= 10) {
         numer = Math.round(decimal * denom);
@@ -301,11 +300,10 @@ function decimalToFraction(decimal) {
             bestDen = denom;
             if (err === 0) break;
         }
-        // если denom уже 10000 — прекратить
-        if (denom === MAX_DEN) break;
+            if (denom === MAX_DEN) break;
     }
 
-    // Ещё бинарный поиск по соседним знаменателям (чтобы не проходить все)
+    // бинарный поиск 
     for (let d = 1; d <= 2000; d++) {
         const n = Math.round(decimal * d);
         const err = Math.abs(decimal - n / d);
@@ -317,12 +315,12 @@ function decimalToFraction(decimal) {
         }
     }
 
-    // Если дробь слишком близка к целому, вернуть целое
+    // возврат целого
     if (Math.abs(bestNum / bestDen - Math.round(bestNum / bestDen)) < 1e-10) {
         return String(Math.round(bestNum / bestDen) * sign);
     }
 
-    // Сокращаем дробь
+    // сокращение 
     const g = gcd(bestNum, bestDen);
     bestNum /= g;
     bestDen /= g;
@@ -331,15 +329,13 @@ function decimalToFraction(decimal) {
 }
 
 function formatNumber(num) {
-    if (!isFinite(num)) return '—';          // Infinity или NaN => печатаем прочерк
+    if (!isFinite(num)) return '—';         
     if (Number.isInteger(num)) return String(num);
 
-    // Если очень большое или очень маленькое — форматируем с 4 знаками
     if (Math.abs(num) >= 1e6 || Math.abs(num) <= 1e-6) {
         return Number(num).toFixed(4);
     }
 
-    // Попробуем представить как дробь
     const frac = decimalToFraction(num);
     if (frac !== null) return frac;
 
@@ -349,7 +345,7 @@ function formatNumber(num) {
 
 
 
-// Форматированный вывод матрицы
+// вывод матрицы
 function matrixToString(matrix) {
     let result = '<table style="border-collapse: collapse; margin: 10px 0;">';
     for (let i = 0; i < matrix.length; i++) {
@@ -368,7 +364,7 @@ function matrixToString(matrix) {
     return result;
 }
 
-// Проверка строки на "приколы"
+// приколы
 function checkRow(row, size) {
     let allZero = true;
     for (let j = 0; j < size; j++) {
@@ -377,12 +373,11 @@ function checkRow(row, size) {
             break;
         }
     }
-    if (allZero && row[size] !== 0) return 1; // Прикол №1
-    if (allZero && row[size] === 0) return 2; // Прикол №2
-    return 0; // всё нормально
+    if (allZero && row[size] !== 0) return 1; 
+    if (allZero && row[size] === 0) return 2;
+    return 0; 
 }
 
-// Метод Гаусса
 function solveGauss() {
     const size = currentSize;
     const stepsContainer = document.getElementById('solution-steps');
@@ -409,7 +404,7 @@ function solveGauss() {
         <div class="matrixtostr">${matrixToString(Ab)}</div>
     </div>`;
     
-    // Прямой ход
+    // прямой 
     for (let col = 0; col < size; col++) {
         let maxRow = col;
         for (let row = col + 1; row < size; row++) {
@@ -423,7 +418,7 @@ function solveGauss() {
                 <div class="matrixtostr">${matrixToString(Ab)}</div>
             </div>`;
             
-            // Проверка приколов после перестановки
+            // проверка после перестановки
             for (let r = 0; r < size; r++) {
                 const check = checkRow(Ab[r], size);
                 if (check === 1) {
@@ -447,7 +442,7 @@ function solveGauss() {
                     <div class="matrixtostr">${matrixToString(Ab)}</div>
                 </div>`;
                 
-                // Проверка приколов после обнуления
+                // проверка после нулей
                 for (let r = 0; r < size; r++) {
                     const check = checkRow(Ab[r], size);
                     if (check === 1) {
@@ -463,7 +458,7 @@ function solveGauss() {
         }
     }
     
-    // Обратный ход
+    // обратный 
     const x = new Array(size);
     for (let i = size - 1; i >= 0; i--) {
         if (Ab[i][i] === 0) {
@@ -475,7 +470,6 @@ function solveGauss() {
         x[i] /= Ab[i][i];
     }
     
-    // Вывод результата
     let resultHTML = '<div class="result-container"><h6>Решение системы:</h6>';
     for (let i = 0; i < size; i++) {
         resultHTML += `<div class="result-item">${variableNames[i]} = ${formatNumber(x[i])}</div>`;
