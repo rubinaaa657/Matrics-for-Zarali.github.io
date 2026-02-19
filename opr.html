@@ -52,99 +52,84 @@
 
 <button class="btn" onclick="calculateDeterminant()">Вычислить</button>
     <p></p>
-<script>
-const sizeSelect = document.getElementById('matrix-size-opr');
 
-function generateMatrixopr(rows,cols, className,isResult = false) {
-    const table = document.querySelector(`.${className} tbody`);
+<script>
+const rowsSelect = document.getElementById('rowsopr');
+const colsSelect = document.getElementById('colsopr');
+
+function syncSize(e) {
+    const val = e.target.value;
+    rowsSelect.value = val;
+    colsSelect.value = val;
+    generateMatrixopr();
+}
+
+rowsSelect.addEventListener('change', syncSize);
+colsSelect.addEventListener('change', syncSize);
+
+function generateMatrixopr() {
+    const size = parseInt(rowsSelect.value);
+    const table = document.querySelector('.matrixopr tbody');
     table.innerHTML = '';
+    
     for (let i = 0; i < size; i++) {
         const row = document.createElement('tr');
         for (let j = 0; j < size; j++) {
             const cell = document.createElement('td');
             const input = document.createElement('input');
             input.type = 'number';
+            input.style.width = "50px"; 
             input.placeholder = `a${i+1}${j+1}`;
             cell.appendChild(input);
             row.appendChild(cell);
         }
         table.appendChild(row);
     }
+    document.querySelector('.matrixResultopr tbody').innerHTML = '';
 }
-// function generateMatrixD(rows, cols, className, isResult = false) {
-//   const table = document.querySelector(`.${className} tbody`);
-//   table.innerHTML = '';
-//   for (let i = 0; i < rows; i++) {
-//     const row = document.createElement('tr');
-//     for (let j = 0; j < cols; j++) {
-//       const cell = document.createElement('td');
-//       const input = document.createElement('input');
-//       input.type = 'number';
-//       if (isResult) input.readOnly = true;
-//       input.placeholder = `${className[6]}${i + 1}${j + 1}`;
-//       cell.appendChild(input);
-//       row.appendChild(cell);
-//     }
-//     table.appendChild(row);
-//   }
-// }
-function getMatrixFromTable(className) {
-    const matrix = [];
-    document.querySelectorAll(`.${className} tbody tr`).forEach(row => {
-        const rowValues = [];
-        row.querySelectorAll('input').forEach(cell => {
-            const val = parseFloat(cell.value);
-            rowValues.push(isNaN(val) ? 0 : val);
-        });
-        matrix.push(rowValues);
-    });
-    return matrix;
+
+function getDeterminant(matrix) {
+    const n = matrix.length;
+    if (n === 1) return matrix[0][0];
+    if (n === 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+
+    let det = 0;
+    for (let i = 0; i < n; i++) {
+        const subMatrix = matrix.slice(1).map(row => 
+            row.filter((_, colIndex) => colIndex !== i)
+        );
+        det += Math.pow(-1, i) * matrix[0][i] * getDeterminant(subMatrix);
+    }
+    return det;
 }
 
 function calculateDeterminant() {
-    const matrix = getMatrixFromTable('matrixopr');
-    const size = matrix.length;
-    const resultTable = document.querySelector('.matrixResultopr tbody');
-    resultTable.innerHTML = '';
+    const matrix = [];
+    const rows = document.querySelectorAll('.matrixopr tbody tr');
+    
+    rows.forEach(row => {
+        const rowValues = [];
+        row.querySelectorAll('input').forEach(input => {
+            rowValues.push(parseFloat(input.value) || 0);
+        });
+        matrix.push(rowValues);
+    });
 
-    if (size === 2) {
-        const det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0];
-        const row = document.createElement('tr');
-        const cell = document.createElement('td');
-        cell.textContent = det;
-        row.appendChild(cell);
-        resultTable.appendChild(row);
-    } else {
-        alert("Определитель считается только для 2x2 матриц.");
-    }
+    const result = getDeterminant(matrix);
+    const resultTable = document.querySelector('.matrixResultopr tbody');
+    resultTable.innerHTML = `<tr><td style="font-weight: bold; font-size: 1.2em;">|A| = ${result}</td></tr>`;
 }
 
-sizeSelect.addEventListener('change', () => {
-    const size = parseInt(sizeSelect.value);
-    generateMatrixopr(size, 'matrixopr');
-    document.querySelector('.matrixResultopr tbody').innerHTML = '';
-});
-
-generateMatrixopr(parseInt(sizeSelect.value), 'matrixopr');
-
-
-
-
-
-
-
-
+generateMatrixopr();
 
 </script>
 
 
 
 
-
-
-<p></p>
+<!-- <p></p>
 <h4 class="circle">Алгебраическое дополнение</h4>
-<h6>Алгебраическим дополнением элемента aij матрицы называется минор этого элемента, умноженный на (-1)</h6>
+<h6>Алгебраическим дополнением элемента aij матрицы называется минор этого элемента, умноженный на (-1)</h6> -->
 
 </body>
 </html>
