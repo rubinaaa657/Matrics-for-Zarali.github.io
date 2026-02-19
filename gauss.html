@@ -30,240 +30,99 @@
 <h3>A + k · B</h3>
 <p></p>
 <h6>Выберите размер СЛАУ:</h6>
-<select id="matrix-size-gauss" class="size-select-gauss">
-  <option value="2">2 x 2</option>
-  <option value="3" selected>3 x 3</option>
-  <option value="4">4 x 4</option>
-  <option value="5">5 x 5</option>
-  <option value="6">6 x 6</option>
-</select>
+<div class="size-select-group">
+  <label>
+    Строк:
+    <select id="matrix-rows-gauss" class="size-select-gauss">
+      <option value="2">2</option>
+      <option value="3" selected>3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </label>
+
+  <label style="margin-left: 10px;">
+    Столбцов:
+    <select id="matrix-cols-gauss" class="size-select-gauss">
+      <option value="2">2</option>
+      <option value="3" selected>3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </label>
+</div>
 <h6>Введите СЛАУ:</h6>
-
-
-    
-    <div id="equations-container" class="equations-container"></div>
+<div id="equations-container" class="equations-container"></div>
 <button class="btn" onclick="solveGauss()">Вычислить</button>
 
-<div id="solution-steps"></div>
-<div id="final-result"></div>
+<div id="gauss-steps"></div>
+<div id="gauss-result"></div>
 
-
-    <!-- <script>
-let currentSize = 3;
+<!-- <script>
+let currentRows = 3;
+let currentCols = 3;
 const variableNames = ['x', 'y', 'z', 'w', 'v', 'u'];
 
-// Создание полей для СЛАУ
-document.addEventListener('DOMContentLoaded', () => createEquations(currentSize));
+// СЛАУ
+document.addEventListener('DOMContentLoaded', () => createEquations(currentRows, currentCols));
 
-document.getElementById('matrix-size-gauss').addEventListener('change', function() {
-    currentSize = parseInt(this.value);
-    createEquations(currentSize);
+document.getElementById('matrix-rows-gauss').addEventListener('change', function() {
+    currentRows = parseInt(this.value);
+    createEquations(currentRows, currentCols);
+});
+document.getElementById('matrix-cols-gauss').addEventListener('change', function() {
+    currentCols = parseInt(this.value);
+    createEquations(currentRows, currentCols);
 });
 
-function createEquations(size) {
+function createEquations(rows, cols) {
     const container = document.getElementById('equations-container');
     container.innerHTML = '';
     
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < rows; i++) {
         const equationDiv = document.createElement('div');
         equationDiv.className = 'equation';
         
-        for (let j = 0; j < size; j++) {
+        for (let j = 0; j < cols; j++) {
             const input = document.createElement('input');
             input.type = 'number';
             input.className = 'coefficient';
             input.id = `a-${i}-${j}`;
-            input.placeholder = `a${i+1}${j+1}`;
+            input.placeholder = `a${i+1}${j+1}`; // плейсхолдер как a11, a12, ...
+            
+            equationDiv.appendChild(input);
             
             const variableSpan = document.createElement('span');
             variableSpan.className = 'variable';
-            variableSpan.textContent = variableNames[j];
-            
-            equationDiv.appendChild(input);
+            variableSpan.textContent = variableNames[j]; // x, y, z...
             equationDiv.appendChild(variableSpan);
             
-            if (j < size - 1) {
+            if (j < cols - 1) {
                 const plusSpan = document.createElement('span');
                 plusSpan.className = 'plus';
-                plusSpan.textContent = '+';
+                plusSpan.textContent = ' + ';
                 equationDiv.appendChild(plusSpan);
             }
         }
         
         const equalsSpan = document.createElement('span');
         equalsSpan.className = 'equals';
-        equalsSpan.textContent = '=';
+        equalsSpan.textContent = ' = ';
         equationDiv.appendChild(equalsSpan);
         
         const freeInput = document.createElement('input');
         freeInput.type = 'number';
         freeInput.className = 'coefficient';
         freeInput.id = `b-${i}`;
-        freeInput.placeholder = `b${i+1}`;
+        freeInput.placeholder = `b${i+1}`; // свободный член
         equationDiv.appendChild(freeInput);
         
         container.appendChild(equationDiv);
     }
 }
 
-// Функция для форматирования числа
-function formatNumber(num) {
-    if (Number.isInteger(num)) return num;
-    return +num.toFixed(4);
-}
-
-// Форматированный вывод матрицы
-function matrixToString(matrix) {
-    let result = '<table style="border-collapse: collapse; margin: 10px 0;">';
-    for (let i = 0; i < matrix.length; i++) {
-        result += '<tr>';
-        for (let j = 0; j < matrix[i].length; j++) {
-            let val = formatNumber(matrix[i][j]);
-            if (j === matrix[i].length - 1) {
-                result += `<td style="border-left: 2px solid #000; padding: 5px; text-align: center;">${val}</td>`;
-            } else {
-                result += `<td style="padding: 5px; text-align: center;">${val}</td>`;
-            }
-        }
-        result += '</tr>';
-    }
-    result += '</table>';
-    return result;
-}
-
-// Метод Гаусса
-function solveGauss() {
-    const size = currentSize;
-    const stepsContainer = document.getElementById('solution-steps');
-    const resultContainer = document.getElementById('final-result');
-    stepsContainer.innerHTML = '';
-    resultContainer.innerHTML = '';
-    
-    const A = [];
-    const b = [];
-    
-    for (let i = 0; i < size; i++) {
-        A[i] = [];
-        for (let j = 0; j < size; j++) {
-            A[i][j] = parseFloat(document.getElementById(`a-${i}-${j}`).value) || 0;
-        }
-        b[i] = parseFloat(document.getElementById(`b-${i}`).value) || 0;
-    }
-    
-    const Ab = [];
-    for (let i = 0; i < size; i++) Ab[i] = [...A[i], b[i]];
-    
-    stepsContainer.innerHTML += `<div class="step-container">
-        <div class="step-title">Исходная расширенная матрица:</div>
-        <div>${matrixToString(Ab)}</div>
-    </div>`;
-    
-    // Прямой ход
-    for (let col = 0; col < size; col++) {
-        let maxRow = col;
-        for (let row = col + 1; row < size; row++) {
-            if (Math.abs(Ab[row][col]) > Math.abs(Ab[maxRow][col])) maxRow = row;
-        }
-        if (maxRow !== col) {
-            [Ab[col], Ab[maxRow]] = [Ab[maxRow], Ab[col]];
-            stepsContainer.innerHTML += `<div class="step-container">
-                <div class="step-title">Шаг ${col+1}.1: Меняем строки ${col+1} и ${maxRow+1}:</div>
-                <div>${matrixToString(Ab)}</div>
-            </div>`;
-        }
-        
-        for (let row = col + 1; row < size; row++) {
-            if (Ab[col][col] !== 0) {
-                const k = -Ab[row][col] / Ab[col][col];
-                for (let j = col; j <= size; j++) Ab[row][j] += k * Ab[col][j];
-                
-                stepsContainer.innerHTML += `<div class="step-container">
-                    <div class="step-title">Шаг ${col+1}.2: Обнуляем элемент [${row+1},${col+1}]</div>
-                    <div>${matrixToString(Ab)}</div>
-                </div>`;
-            }
-        }
-    }
-    
-    // Обратный ход
-    const x = new Array(size);
-    for (let i = size - 1; i >= 0; i--) {
-        if (Ab[i][i] === 0) {
-            resultContainer.innerHTML = '<div class="result-container">Система не имеет единственного решения!</div>';
-            return;
-        }
-        x[i] = Ab[i][size];
-        for (let j = i + 1; j < size; j++) x[i] -= Ab[i][j] * x[j];
-        x[i] /= Ab[i][i];
-    }
-    
-    // Вывод результата
-    let resultHTML = '<div class="result-container"><h6>Решение системы:</h6>';
-    for (let i = 0; i < size; i++) {
-        resultHTML += `<div class="result-item">${variableNames[i]} = ${formatNumber(x[i])}</div>`;
-    }
-    resultHTML += '</div>';
-    resultContainer.innerHTML = resultHTML;
-}
-</script> -->
-
-<script>
-let currentSize = 3;
-const variableNames = ['x', 'y', 'z', 'w', 'v', 'u'];
-
-//СЛАУ
-document.addEventListener('DOMContentLoaded', () => createEquations(currentSize));
-
-document.getElementById('matrix-size-gauss').addEventListener('change', function() {
-    currentSize = parseInt(this.value);
-    createEquations(currentSize);
-});
-
-function createEquations(size) {
-    const container = document.getElementById('equations-container');
-    container.innerHTML = '';
-    
-    for (let i = 0; i < size; i++) {
-        const equationDiv = document.createElement('div');
-        equationDiv.className = 'equation';
-        
-        for (let j = 0; j < size; j++) {
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.className = 'coefficient';
-            input.id = `a-${i}-${j}`;
-            input.placeholder = `a${i+1}${j+1}`;
-            
-            const variableSpan = document.createElement('span');
-            variableSpan.className = 'variable';
-            variableSpan.textContent = variableNames[j];
-            
-            equationDiv.appendChild(input);
-            equationDiv.appendChild(variableSpan);
-            
-            if (j < size - 1) {
-                const plusSpan = document.createElement('span');
-                plusSpan.className = 'plus';
-                plusSpan.textContent = '+';
-                equationDiv.appendChild(plusSpan);
-            }
-        }
-        
-        const equalsSpan = document.createElement('span');
-        equalsSpan.className = 'equals';
-        equalsSpan.textContent = '=';
-        equationDiv.appendChild(equalsSpan);
-        
-        const freeInput = document.createElement('input');
-        freeInput.type = 'number';
-        freeInput.className = 'coefficient';
-        freeInput.id = `b-${i}`;
-        freeInput.placeholder = `b${i+1}`;
-        equationDiv.appendChild(freeInput);
-        
-        container.appendChild(equationDiv);
-    }
-}
 
 // НОД сокращение 
 function gcd(a, b) {
@@ -379,25 +238,25 @@ function checkRow(row, size) {
 }
 
 function solveGauss() {
-    const size = currentSize;
-    const stepsContainer = document.getElementById('solution-steps');
-    const resultContainer = document.getElementById('final-result');
+    const rows = currentRows;
+    const cols = currentCols;
+    const stepsContainer = document.getElementById('gauss-steps');
+    const resultContainer = document.getElementById('gauss-result');
     stepsContainer.innerHTML = '';
     resultContainer.innerHTML = '';
-    
     const A = [];
     const b = [];
     
-    for (let i = 0; i < size; i++) {
+    for (let i = 0; i < rows; i++) {
         A[i] = [];
-        for (let j = 0; j < size; j++) {
+        for (let j = 0; j < cols; j++) {
             A[i][j] = parseFloat(document.getElementById(`a-${i}-${j}`).value) || 0;
         }
         b[i] = parseFloat(document.getElementById(`b-${i}`).value) || 0;
     }
     
     const Ab = [];
-    for (let i = 0; i < size; i++) Ab[i] = [...A[i], b[i]];
+    for (let i = 0; i < rows; i++) Ab[i] = [...A[i], b[i]];
     
     stepsContainer.innerHTML += `<div class="step-container">
         <div class="step-title">Исходная расширенная матрица:</div>
@@ -405,9 +264,9 @@ function solveGauss() {
     </div>`;
     
     // прямой 
-    for (let col = 0; col < size; col++) {
+    for (let col = 0; col < cols; col++) {
         let maxRow = col;
-        for (let row = col + 1; row < size; row++) {
+        for (let row = col + 1; row < rows; row++) {
             if (Math.abs(Ab[row][col]) > Math.abs(Ab[maxRow][col])) maxRow = row;
         }
         
@@ -436,11 +295,12 @@ function solveGauss() {
             if (Ab[col][col] !== 0) {
                 const k = -Ab[row][col] / Ab[col][col];
                 for (let j = col; j <= size; j++) Ab[row][j] += k * Ab[col][j];
-                
+
                 stepsContainer.innerHTML += `<div class="step-container">
-                    <div class="step-title">Шаг ${col+1}.2: Обнуляем элемент [${row+1},${col+1}]</div>
+                    <div class="step-title">Шаг ${col+1}.2: Обнуляем элемент [${row+1},${col+1}] (умножаем строку ${col+1} на ${formatNumber(k)} и прибавляем к строке ${row+1})</div>
                     <div class="matrixtostr">${matrixToString(Ab)}</div>
                 </div>`;
+
                 
                 // проверка после нулей
                 for (let r = 0; r < size; r++) {
@@ -459,13 +319,13 @@ function solveGauss() {
     }
     
     // обратный 
-    const x = new Array(size);
-    for (let i = size - 1; i >= 0; i--) {
+    const x = new Array(cols);
+    for (let i = Math.min(rows,cols) - 1; i >= 0; i--) {
         if (Ab[i][i] === 0) {
             resultContainer.innerHTML = '<div class="result-container">Система не имеет единственного решения!</div>';
             return;
         }
-        x[i] = Ab[i][size];
+        x[i] = Ab[i][cols];
         for (let j = i + 1; j < size; j++) x[i] -= Ab[i][j] * x[j];
         x[i] /= Ab[i][i];
     }
@@ -477,123 +337,547 @@ function solveGauss() {
 resultHTML += '</div>';
 resultContainer.innerHTML = resultHTML;
 }
-</script>
-
-
-<div id="steps-container"></div>
-
+</script> -->
 <!-- <script>
-let currentSize = 3;
-const variableNames = ['x', 'y', 'z', 't', 'v', 'u'];
+// Имена переменных
+let currentRows = 3;
+let currentCols = 3;
 
-document.addEventListener('DOMContentLoaded', () => createEquations(3));
-document.getElementById('matrix-size-gauss').addEventListener('change', function() {
-    currentSize = parseInt(this.value);
-    createEquations(currentSize);
+const variableNames = ['x', 'y', 'z', 'w', 'v', 'u'];
+
+
+
+document.addEventListener('DOMContentLoaded', () => createEquations(currentRows, currentCols));
+
+document.getElementById('matrix-rows-gauss').addEventListener('change', function() {
+    currentRows = parseInt(this.value);
+    createEquations(currentRows, currentCols);
+});
+document.getElementById('matrix-cols-gauss').addEventListener('change', function() {
+    currentCols = parseInt(this.value);
+    createEquations(currentRows, currentCols);
 });
 
-function createEquations(size) {
+function createEquations(rows, cols) {
     const container = document.getElementById('equations-container');
     container.innerHTML = '';
-    for (let i = 0; i < size; i++) {
-        const eq = document.createElement('div');
-        for (let j = 0; j < size; j++) {
-            eq.innerHTML += `<input type="number" id="a-${i}-${j}" class="coefficient" placeholder="a${i+1}${j+1}"> ${variableNames[j]} `;
-            if (j < size - 1) eq.innerHTML += '+ ';
+    
+    for (let i = 0; i < rows; i++) {
+        const equationDiv = document.createElement('div');
+        equationDiv.className = 'equation';
+        
+        for (let j = 0; j < cols; j++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'coefficient';
+            input.id = `a-${i}-${j}`;
+            input.placeholder = `a${i+1}${j+1}`;
+            equationDiv.appendChild(input);
+            
+            const variableSpan = document.createElement('span');
+            variableSpan.className = 'variable';
+            variableSpan.textContent = variableNames[j];
+            equationDiv.appendChild(variableSpan);
+            
+            if (j < cols - 1) {
+                const plusSpan = document.createElement('span');
+                plusSpan.className = 'plus';
+                plusSpan.textContent = ' + ';
+                equationDiv.appendChild(plusSpan);
+            }
         }
-        eq.innerHTML += `= <input type="number" id="b-${i}" class="coefficient" placeholder="b${i+1}">`;
+        
+        const equalsSpan = document.createElement('span');
+        equalsSpan.className = 'equals';
+        equalsSpan.textContent = ' = ';
+        equationDiv.appendChild(equalsSpan);
+        
+        const freeInput = document.createElement('input');
+        freeInput.type = 'number';
+        freeInput.className = 'coefficient';
+        freeInput.id = `b-${i}`;
+        freeInput.placeholder = `b${i+1}`;
+        equationDiv.appendChild(freeInput);
+        
+        container.appendChild(equationDiv);
+    }
+}
+
+// НОД
+function gcd(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b) {
+        const t = a % b;
+        a = b;
+        b = t;
+    }
+    return a;
+}
+
+// Десятичное → дробь
+function decimalToFraction(decimal) {
+    if (!isFinite(decimal)) return null; 
+    const sign = decimal < 0 ? -1 : 1;
+    decimal = Math.abs(decimal);
+
+    const MAX_DEN = 10000;
+    let bestNum = 1, bestDen = 1, bestErr = Infinity;
+
+    for (let d = 1; d <= MAX_DEN; d++) {
+        const n = Math.round(decimal * d);
+        const err = Math.abs(decimal - n / d);
+        if (err < bestErr) {
+            bestErr = err;
+            bestNum = n;
+            bestDen = d;
+        }
+    }
+
+    const g = gcd(bestNum, bestDen);
+    bestNum /= g;
+    bestDen /= g;
+
+    return (sign < 0 ? "-" : "") + bestNum + "/" + bestDen;
+}
+
+function formatNumber(num) {
+    if (!isFinite(num)) return '—';         
+    if (Number.isInteger(num)) return String(num);
+    return Number(num).toFixed(4).replace(/\.?0+$/,"");
+}
+
+// Вывод матрицы
+function matrixToString(matrix) {
+    let result = '<table style="border-collapse: collapse; margin: 10px 0;">';
+    for (let i = 0; i < matrix.length; i++) {
+        result += '<tr>';
+        for (let j = 0; j < matrix[i].length; j++) {
+            let val = formatNumber(matrix[i][j]);
+            if (j === matrix[i].length - 1) {
+                result += `<td style="border-left: 2px solid #000; padding: 5px; text-align: center;">${val}</td>`;
+            } else {
+                result += `<td style="padding: 5px; text-align: center;">${val}</td>`;
+            }
+        }
+        result += '</tr>';
+    }
+    result += '</table>';
+    return result;
+}
+
+// Проверка строки
+function checkRow(row, size) {
+    let allZero = true;
+    for (let j = 0; j < size; j++) {
+        if (row[j] !== 0) {
+            allZero = false;
+            break;
+        }
+    }
+    if (allZero && row[size] !== 0) return 1; 
+    if (allZero && row[size] === 0) return 2;
+    return 0; 
+}
+
+// Решение методом Гаусса без перестановки строк
+function solveGauss() {
+    const rows = currentRows;
+    const cols = currentCols;
+    const stepsContainer = document.getElementById('gauss-steps');
+    const resultContainer = document.getElementById('gauss-result');
+    stepsContainer.innerHTML = '';
+    resultContainer.innerHTML = '';
+
+    const A = [];
+    const b = [];
+    
+    for (let i = 0; i < rows; i++) {
+        A[i] = [];
+        for (let j = 0; j < cols; j++) {
+            A[i][j] = parseFloat(document.getElementById(`a-${i}-${j}`).value) || 0;
+        }
+        b[i] = parseFloat(document.getElementById(`b-${i}`).value) || 0;
+    }
+
+    const Ab = A.map((row, i) => [...row, b[i]]);
+
+    stepsContainer.innerHTML += `
+        <div class="step-container">
+            <div class="step-title">Исходная расширенная матрица:</div>
+            <div class="matrixtostr">${matrixToString(Ab)}</div>
+        </div>`;
+
+    let stopElimination = false;
+
+    // Прямой ход (без перестановки)
+    for (let col = 0; col < Math.min(rows, cols); col++) {
+if (Ab[col][col] === 0) {
+    // поиск строки с ненулевым элементом ниже
+    for (let r = col + 1; r < rows; r++) {
+        if (Ab[r][col] !== 0) {
+            [Ab[col], Ab[r]] = [Ab[r], Ab[col]]; // меняем местами
+            break;
+        }
+    }
+    if (Ab[col][col] === 0) continue; // если всё ещё 0, пропускаем
+}
+        
+        for (let row = col + 1; row < rows; row++) {
+            const k = -Ab[row][col] / Ab[col][col];
+            for (let j = col; j <= cols; j++) Ab[row][j] += k * Ab[col][j];
+
+            stepsContainer.innerHTML += `
+                <div class="step-container">
+                    <div class="step-title">Обнуляем элемент [${row+1},${col+1}] (k = ${formatNumber(k)})</div>
+                    <div class="matrixtostr">${matrixToString(Ab)}</div>
+                </div>`;
+            
+            // Проверка "приколов"
+            const check = checkRow(Ab[row], cols);
+            if (check === 1) {
+                resultContainer.innerHTML = '<div class="result-container">Система несовместна. Решения нет.</div>';
+                return;
+            }
+            if (check === 2) {
+                // Если строка полностью нулевая, прекращаем обнуление
+                stopElimination = true;
+                break;
+            }
+        }
+        if (stopElimination) break;
+    }
+
+   // Обратный ход с подстановкой и упрощением
+const x = new Array(cols).fill(null);
+
+for (let i = Math.min(rows, cols) - 1; i >= 0; i--) {
+    let sum = Ab[i][cols]; // свободный член
+    for (let j = i + 1; j < cols; j++) {
+        if (Ab[i][j] !== 0) {
+            if (x[j] !== null && typeof x[j] === 'number') {
+                sum -= Ab[i][j] * x[j]; // подставляем найденное число
+            } 
+        }
+    }
+    if (Ab[i][i] !== 0) {
+        x[i] = sum / Ab[i][i]; // числовое решение, если возможно
+x[i] = parseFloat(x[i].toFixed(4));
+    } else {
+        // Если Ab[i][i] = 0, оставляем выражение через свободные переменные
+        let expr = formatNumber(sum);
+        for (let j = i + 1; j < cols; j++) {
+            if (Ab[i][j] !== 0) {
+const coeff = Ab[i][j];
+if (coeff > 0) expr += ` - ${formatNumber(coeff)}*${variableNames[j]}`;
+else if (coeff < 0) expr += ` + ${formatNumber(-coeff)}*${variableNames[j]}`;
+            }
+        }
+        x[i] = expr;
+    }
+}
+
+// Формируем вывод
+let resultHTML = '<div class="result-container"><h6>Решение:</h6>';
+for (let i = 0; i < cols; i++) {
+    resultHTML += `<div>${variableNames[i]} = ${x[i]}</div>`;
+}
+resultHTML += '</div>';
+resultContainer.innerHTML = resultHTML;
+}
+</script> -->
+
+<script type="text/javascript">
+var currentRows = 3;
+var currentCols = 3;
+const variableNames = ['x', 'y', 'z', 'w', 'v', 'u'];
+
+document.addEventListener('DOMContentLoaded', () => createEquations(currentRows, currentCols));
+
+document.getElementById('matrix-rows-gauss').addEventListener('change', function() {
+    currentRows = parseInt(this.value);
+    createEquations(currentRows, currentCols);
+});
+document.getElementById('matrix-cols-gauss').addEventListener('change', function() {
+    currentCols = parseInt(this.value);
+    createEquations(currentRows, currentCols);
+});
+
+function createEquations(rows, cols) {
+    const container = document.getElementById('equations-container');
+    container.innerHTML = '';
+    
+    for (let i = 0; i < rows; i++) {
+        const eq = document.createElement('div');
+        eq.className = 'equation';
+        for (let j = 0; j < cols; j++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = `a-${i}-${j}`;
+            input.className = 'coefficient';
+            input.placeholder = `a${i+1}${j+1}`;
+            eq.appendChild(input);
+            const span = document.createElement('span');
+            span.textContent = variableNames[j];
+            eq.appendChild(span);
+            if (j < cols - 1) {
+                const plus = document.createElement('span');
+                plus.textContent = ' + ';
+                eq.appendChild(plus);
+            }
+        }
+        const eqs = document.createElement('span');
+        eqs.textContent = ' = ';
+        eq.appendChild(eqs);
+        const b = document.createElement('input');
+        b.type = 'number';
+        b.id = `b-${i}`;
+        b.className = 'coefficient';
+        b.placeholder = `b${i+1}`;
+        eq.appendChild(b);
         container.appendChild(eq);
     }
 }
 
-// --- Рациональная арифметика ---
-function gcd(a, b) { return b === 0 ? Math.abs(a) : gcd(b, a % b); }
-
-function frac(num, den = 1) {
-    if (den === 0) return {num: 1, den: 0}; // ∞
-    const g = gcd(Math.round(num), Math.round(den));
-    num /= g; den /= g;
-    if (den < 0) { num = -num; den = -den; }
-    return {num, den};
+function formatNumber(num) {
+    if (!isFinite(num)) return '—';
+    return Number(num).toFixed(4).replace(/\.?0+$/,"");
 }
 
-function add(a, b) { return frac(a.num * b.den + b.num * a.den, a.den * b.den); }
-function sub(a, b) { return frac(a.num * b.den - b.num * a.den, a.den * b.den); }
-function mul(a, b) { return frac(a.num * b.num, a.den * b.den); }
-function div(a, b) { return frac(a.num * b.den, a.den * b.num); }
-function toStr(a) {
-    if (a.den === 0) return '∞';
-    if (a.den === 1) return `${a.num}`;
-    return `${a.num}/${a.den}`;
-}
-
-// --- Метод Гаусса ---
+// --- основной алгоритм ---
 function solveGauss() {
-    const size = currentSize;
-    const result = document.getElementById('final-result');
-    result.innerHTML = '';
+    const rows = currentRows;
+    const cols = currentCols;
+    const stepsContainer = document.getElementById('gauss-steps');
+    const resultContainer = document.getElementById('gauss-result');
+    stepsContainer.innerHTML = '';
+    resultContainer.innerHTML = '';
 
-    // Считываем матрицу
-    let A = [], b = [];
-    for (let i = 0; i < size; i++) {
+    // --- читаем матрицу ---
+    const A = [];
+    for (let i = 0; i < rows; i++) {
         A[i] = [];
-        for (let j = 0; j < size; j++) {
-            A[i][j] = frac(parseFloat(document.getElementById(`a-${i}-${j}`).value) || 0);
+        for (let j = 0; j < cols; j++) {
+            A[i][j] = parseFloat(document.getElementById(`a-${i}-${j}`).value) || 0;
         }
-        b[i] = frac(parseFloat(document.getElementById(`b-${i}`).value) || 0);
+        A[i].push(parseFloat(document.getElementById(`b-${i}`).value) || 0);
     }
 
-    // Расширенная матрица
-    const Ab = A.map((row, i) => [...row, b[i]]);
-
-    // --- Прямой ход ---
-    for (let col = 0; col < size; col++) {
-        // частичный выбор главного элемента
-        let maxRow = col;
-        for (let r = col + 1; r < size; r++)
-            if (Math.abs(Ab[r][col].num / Ab[r][col].den) > Math.abs(Ab[maxRow][col].num / Ab[maxRow][col].den))
-                maxRow = r;
-        if (maxRow !== col) [Ab[col], Ab[maxRow]] = [Ab[maxRow], Ab[col]];
-
-        // обнуляем под диагональю
-        for (let row = col + 1; row < size; row++) {
-            if (Ab[col][col].num === 0) continue;
-            const k = div(frac(-Ab[row][col].num, Ab[row][col].den), Ab[col][col]);
-            for (let j = col; j <= size; j++) {
-                Ab[row][j] = add(Ab[row][j], mul(k, Ab[col][j]));
+    // --- прямой ход ---
+    for (let i = 0; i < rows; i++) {
+        // поиск ненулевого ведущего
+        if (A[i][i] === 0) {
+            for (let r = i + 1; r < rows; r++) {
+                if (A[r][i] !== 0) {
+                    [A[i], A[r]] = [A[r], A[i]];
+                    break;
+                }
+            }
+        }
+        const diag = A[i][i];
+        if (diag === 0) continue;
+        for (let j = i; j <= cols; j++) A[i][j] /= diag;
+        for (let r = i + 1; r < rows; r++) {
+            const factor = A[r][i];
+            for (let j = i; j <= cols; j++) {
+                A[r][j] -= factor * A[i][j];
             }
         }
     }
-// --- Обратный ход с учетом свободных переменных ---
-const x = new Array(size);
-for (let i = size - 1; i >= 0; i--) {
-    let sum = frac(0);
-    for (let j = i + 1; j < size; j++) {
-        sum = add(sum, mul(Ab[i][j], x[j] || {num:0, den:1}));
+
+    // --- обратный ход ---
+    const x = new Array(cols).fill(0);
+    const free = [];
+
+    for (let i = rows - 1; i >= 0; i--) {
+        // ищем первый ненулевой коэффициент
+        let lead = -1;
+        for (let j = 0; j < cols; j++) {
+            if (Math.abs(A[i][j]) > 1e-10) {
+                lead = j;
+                break;
+            }
+        }
+        if (lead === -1) continue;
+
+        let sum = A[i][cols];
+        for (let j = lead + 1; j < cols; j++) {
+            sum -= A[i][j] * x[j];
+        }
+        x[lead] = sum / A[i][lead];
     }
 
-    if (Ab[i][i].num === 0) {
-        x[i] = {free:true, name: variableNames[i]}; // свободная переменная
-        continue;
+    // --- проверка на свободные переменные ---
+    for (let j = 0; j < cols; j++) {
+        let allZero = true;
+        for (let i = 0; i < rows; i++) {
+            if (Math.abs(A[i][j]) > 1e-10) {
+                allZero = false;
+                break;
+            }
+        }
+        if (allZero) free.push(j);
     }
 
-    x[i] = div(sub(Ab[i][size], sum), Ab[i][i]);
+    // --- формируем результат ---
+    let resultHTML = '<div class="result-container"><h6>Решение:</h6>';
+    if (free.length > 0) {
+        let t = 1;
+        for (let idx of free) {
+            resultHTML += `<div>${variableNames[idx]} = t${t}</div>`;
+            x[idx] = `t${t}`;
+            t++;
+        }
+    }
+    for (let i = 0; i < cols; i++) {
+        if (typeof x[i] === 'number') {
+            resultHTML += `<div>${variableNames[i]} = ${formatNumber(x[i])}</div>`;
+        } else {
+            resultHTML += `<div>${variableNames[i]} = ${x[i]}</div>`;
+        }
+    }
+    resultHTML += '</div>';
+
+    resultContainer.innerHTML = resultHTML;
+}
+</script>
+
+
+
+<br>
+
+
+<h4 class="circle">Ранг матрицы</h4>
+<h6>Ранг равен числу ведущих элементов, 
+    которые остаются после приведения матрицы к ступенчатому виду</h6>
+    <p></p>
+
+
+<h6>Выберите размер матрицы:</h6>
+<label>Строки: <input type="number" id="rows-matrix" value="3" min="1" max="10"></label>
+<label>Столбцы: <input type="number" id="cols-matrix" value="3" min="1" max="10"></label>
+
+<div id="matrix-container"></div>
+<button id="compute-rank">Вычислить ранг</button>
+<div id="rank-steps"></div>
+<div id="rank-result"></div>
+
+<script>
+let currentRowsr = 3;
+let currentColsr = 3;
+
+document.addEventListener('DOMContentLoaded', () => createMatrix(currentRows, currentCols));
+
+document.getElementById('rows-matrix').addEventListener('change', function() {
+    currentRowsr = parseInt(this.value);
+    createMatrix(currentRowsr, currentColsr);
+});
+
+document.getElementById('cols-matrix').addEventListener('change', function() {
+    currentColsr = parseInt(this.value);
+    createMatrix(currentRowsr, currentColsr);
+});
+
+function createMatrix(rows, cols) {
+    const container = document.getElementById('matrix-container');
+    container.innerHTML = '';
+    for (let i = 0; i < rows; i++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'matrix-row';
+        for (let j = 0; j < cols; j++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'matrix-cell';
+            input.id = `m-${i}-${j}`;
+            input.placeholder = `a${i+1}${j+1}`;
+            rowDiv.appendChild(input);
+        }
+        container.appendChild(rowDiv);
+    }
 }
 
+// Функция вычисления детерминанта рекурсивно
+function determinant(matrix) {
+    const n = matrix.length;
+    if (n === 1) return matrix[0][0];
+    if (n === 2) return matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0];
 
-
-
-  
-
-    // --- Вывод ---
-    let html = '<div class="result-container"><h4>Решение:</h4>';
-    for (let i = 0; i < size; i++) {
-        html += `<div>${variableNames[i]} = ${toStr(x[i])}</div>`;
+    let det = 0;
+    for (let col = 0; col < n; col++) {
+        const subMatrix = matrix.slice(1).map(row => row.filter((_, j) => j !== col));
+        det += (col % 2 === 0 ? 1 : -1) * matrix[0][col] * determinant(subMatrix);
     }
-    html += '</div>';
-    result.innerHTML = html;
+    return det;
 }
-</script> -->
+
+// Генерация всех миноров размера k x k
+function getAllMinors(matrix, k) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const minors = [];
+
+    function combine(arr, k) {
+        if (k === 0) return [[]];
+        if (arr.length < k) return [];
+        const [first, ...rest] = arr;
+        const withFirst = combine(rest, k-1).map(r => [first,...r]);
+        const withoutFirst = combine(rest, k);
+        return withFirst.concat(withoutFirst);
+    }
+
+    const rowComb = combine([...Array(rows).keys()], k);
+    const colComb = combine([...Array(cols).keys()], k);
+
+    for (const r of rowComb) {
+        for (const c of colComb) {
+            const minor = r.map(i => c.map(j => matrix[i][j]));
+            minors.push({rows: r, cols: c, minor});
+        }
+    }
+    return minors;
+}
+
+// Вычисление ранга через миноры с шагами
+function computeRank() {
+    const stepsContainer = document.getElementById('rank-steps');
+    const resultContainer = document.getElementById('rank-result');
+    stepsContainer.innerHTML = '';
+    resultContainer.innerHTML = '';
+
+    const A = [];
+    for (let i = 0; i < currentRowsr; i++) {
+        A[i] = [];
+        for (let j = 0; j < currentColsr; j++) {
+            A[i][j] = parseFloat(document.getElementById(`m-${i}-${j}`).value) || 0;
+        }
+    }
+
+    const maxRank = Math.min(currentRowsr, currentColsr);
+
+    for (let k = maxRank; k >= 1; k--) {
+        stepsContainer.innerHTML += `<h4>Проверяем миноры размера ${k}x${k}:</h4>`;
+        const minors = getAllMinors(A, k);
+        let foundNonZero = false;
+
+        for (let idx = 0; idx < minors.length; idx++) {
+            const m = minors[idx];
+            const det = determinant(m.minor);
+            stepsContainer.innerHTML += `<div>Минор из строк [${m.rows.map(i=>i+1)}], столбцов [${m.cols.map(j=>j+1)}] = ${det.toFixed(4)}</div>`;
+            if (det !== 0) {
+                stepsContainer.innerHTML += `<div style="color:green;">Ненулевой минор найден, ранг = ${k}</div>`;
+                resultContainer.innerHTML = `<h4>Ранг матрицы = ${k}</h4>`;
+                return;
+            }
+        }
+    }
+    resultContainer.innerHTML = `<h4>Все миноры равны 0, ранг = 0</h4>`;
+}
+
+document.getElementById('compute-rank').addEventListener('click', computeRank);
+</script>
+
+
+
 
 
 
